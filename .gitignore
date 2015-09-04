@@ -1,5 +1,6 @@
 ebin/
-tag
 deps/
+rel/
+tag
 .rebar
 
