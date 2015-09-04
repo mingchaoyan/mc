@@ -1,6 +1,3 @@
-%% Author: mingchaoyan
-%% Created: 2013-10-08
-%% Description: Add description to tcp_reader_sup
 -module(tcp_reader_sup).
 -behaviour(supervisor).
 %%

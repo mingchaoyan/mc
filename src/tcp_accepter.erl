@@ -5,7 +5,6 @@
 %% --------------------------------------------------------------------
 %% Include files
 %% --------------------------------------------------------------------
--include("logger.hrl").
 
 %% --------------------------------------------------------------------
 %% External exports
@@ -134,8 +133,7 @@ start_tcp_reader(Sock) ->
     {ok, Reader} = supervisor:start_child(tcp_reader_sup, []),
     case inet:peername(Sock) of
         {ok, {IP, Port}} -> 
-            ?INFO(start_tcp_reader, "client address:~p, port:~p", [IP, Port]),
-            ?INFO(start_tcp_reader, "client name ~p",[b_inner_ip:get_name(IP)]);
+            lager:info("client address:~p, port:~p", [IP, Port]);
         _ -> ignore
     end,
     ok = gen_tcp:controlling_process(Sock, Reader),

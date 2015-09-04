@@ -2,8 +2,6 @@
 
 -behaviour(gen_server).
 
--include("logger.hrl").
-
 -define(TCP_OPTIONS, [binary, {packet, 0}, {active, false}, 
                       {reuseaddr, true}, {nodelay, false}, 
                       {delay_send, true}, {send_timeout, 50000}, 
@@ -42,7 +40,7 @@ start_link() ->
 %% --------------------------------------------------------------------
 init([]) ->
     process_flag(trap_exit, true),
-    Port = list_to_integer(ht_arg:get_argument(ht_port)),
+    Port = application:get_env(mc, port, 0),
     case gen_tcp:listen(Port, ?TCP_OPTIONS) of
         {ok, Socket} ->
             Fun = fun(_) ->

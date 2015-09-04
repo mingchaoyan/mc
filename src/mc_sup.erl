@@ -23,5 +23,9 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    {ok, { {one_for_one, 5, 10}, []} }.
+    {ok, { {one_for_one, 5, 10}, 
+           [
+            ?CHILD(tcp_listener_sup, supervisor),
+            ?CHILD(tcp_reader_sup, supervisor)
+           ]} }.
 
