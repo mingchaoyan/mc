@@ -1,13 +1,14 @@
 -module(test_broadcast).
 -export([start/0]).
 
-%-define(HOST, "45,33.38.56").
--define(HOST, "127.0.0.1").
+-define(HOST, "45.33.38.56").
+%-define(HOST, "127.0.0.1").
 -define(PORT, 10000).
 
 -include("net.hrl").
 start() ->
     {ok, Socket} = gen_tcp:connect(?HOST, ?PORT, ?TCP_OPTIONS),
+    lager:debug("connect ok"),
     Data = "hello world",
     DataBin = list_to_binary(Data),
     Len = byte_size(DataBin),
