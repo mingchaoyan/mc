@@ -2,17 +2,11 @@
 
 -behaviour(gen_server).
 
--define(TCP_OPTIONS, [binary, {packet, 0}, {active, false}, 
-                      {reuseaddr, true}, {nodelay, false}, 
-                      {delay_send, true}, {send_timeout, 50000}, 
-                      {keepalive, true}, {exit_on_close, true}
-                     ]).
--define(ACCEPTER_COUNT, 5).
 
 %% --------------------------------------------------------------------
 %% Include files
 %% --------------------------------------------------------------------
-
+-include("net.hrl").
 %% --------------------------------------------------------------------
 %% External exports
 -export([start_link/0]).
