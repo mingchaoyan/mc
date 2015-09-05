@@ -1,5 +1,6 @@
 ebin/
 deps/
+rel/mc
 tag
 .rebar
 
