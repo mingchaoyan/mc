@@ -4,13 +4,16 @@
 $ git clone https://github.com/mingchaoyan/mc.git
 ...
 $ cd mc
-$ rebar prepare-deps
+$ ./rebar prepare-deps
 ...
-$ rebar compile
+$ ./rebar compile
 ...
-$ madir rel
+$ mkdir rel
 $ cd rel
-$ rebar generate
+$ ./rebar create-node nodeid=mc
+$ # edit rel.config
+$ ../rebar generate
+$ # edit sys.config
 ...
 ```
 
