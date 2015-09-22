@@ -54,28 +54,17 @@ init() ->
                      timeout_count = 0},
     receive
         {go, Socket} ->
-            put(socket, Socket),
+            gen_server:cast(broadcast_server, {add_socket, Socket}),
             parse(Socket, Client);
         Other->
             lager:error("unknown message ~p", [Other])
     end.
 
-handle_broadcast(Bin) ->
-    Socket = get(socket),
-    TotalLen=?HEADER_LENGTH+byte_size(Bin),
-    BinToSend = <<TotalLen:16, Bin/binary>>,
-    gen_tcp:send(Socket, BinToSend).
-
 parse(Socket, Client) ->
     Ref = async_recv(Socket, ?HEADER_LENGTH, ?HEART_TIMEOUT),
-    lager:debug("Ref:~p", [Ref]),
     receive
-        {broadcast, Bin} ->
-            handle_broadcast(Bin),
-            parse(Socket, Client);
-        {inet_async, Socket, Ref, {ok, <<TotleLen:16>>}} ->
-            lager:info("%%%%%recv a new message with totle length:~p%%%%", [TotleLen]),
-            BodyLen = TotleLen - ?HEADER_LENGTH,
+        {inet_async, Socket, Ref, {ok, <<BodyLen:32/little>>}} ->
+            lager:info("%%%%%recv a new message with body length:~p%%%%", [BodyLen]),
             case BodyLen >= 0 of
                 true ->
                     handle_parse_recv(Socket, BodyLen, Client);
@@ -118,9 +107,7 @@ handle_body(Socket, BodyLen, _Client) ->
     receive 
         {inet_async, Socket, RefData, {ok, Bin}} ->
             lager:debug("data from client:~p", [binary_to_list(Bin)]),
-            ChildList = supervisor:which_children(tcp_reader_sup),
-            lager:debug("ChildList:~p", [ChildList]),
-            [Child ! {broadcast, Bin} || {_, Child, _, _} <- ChildList];
+            gen_server:cast(broadcast_server, {broadcast, Bin});
         Other ->
             lager:error("Error! Reason:~p", [Other])
     end.
